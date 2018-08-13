@@ -85,9 +85,12 @@ public class DirectoryManagementResource {
                         @Valid DirectoryReconciliationRequest request)
       throws InvalidAddressException
   {
-    directoryManager.reconcile(Optional.empty(), Optional.ofNullable(request.getToNumber()), request.getNumbers());
+    directoryManager.reconcile(Optional.ofNullable(request.getFromNumber()),
+                               Optional.ofNullable(request.getToNumber()),
+                               request.getNumbers());
   }
 
+  // XXX remove this once acton deploys
   @Timed
   @PUT
   @Consumes(MediaType.APPLICATION_JSON)
@@ -97,6 +100,7 @@ public class DirectoryManagementResource {
                         @Valid DirectoryReconciliationRequest request)
       throws InvalidAddressException
   {
+    fromNumber = fromNumber.replaceFirst("^Optional.of\\((\\+[0-9]+)\\)$", "$1");
     directoryManager.reconcile(Optional.of(fromNumber), Optional.ofNullable(request.getToNumber()), request.getNumbers());
   }
 
